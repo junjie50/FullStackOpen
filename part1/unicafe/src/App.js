@@ -15,15 +15,25 @@ const Header = (props) => {
 }
 
 const Statistics = ({good, neutral, bad}) => {
-  return (
-    <div>
-      <Header header="statistics" />
-      <table border="1px solid">
-        <StaticsticsHead />
-        <StaticsticsBody good={good} bad={bad} neutral={neutral} />
-      </table>
-    </div>
-  )
+  if((good + neutral + bad) == 0) {
+    return (
+      <>
+        <Header header="statistics" />
+        <h4>No feedback given</h4>
+      </>
+    )
+  }
+  else {
+    return (
+      <div>
+        <Header header="statistics" />
+        <table border="1px solid">
+          <StaticsticsHead />
+          <StaticsticsBody good={good} bad={bad} neutral={neutral} />
+        </table>
+      </div>
+    )
+  }
 }
 
 const StaticsticsHead = () => {
