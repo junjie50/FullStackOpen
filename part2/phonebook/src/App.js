@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
+const baseURL = "https://safe-shore-73002.herokuapp.com"
+
 const Button = ({text, onClick}) => {
   return (
     <button onClick={onClick}>{text}</button>
   )
 }
+
 
 const AlertSuccess = ({success, contact, setSuccess}) => {
   useEffect(() => {
@@ -158,7 +161,7 @@ const App = () => {
 
       // Sending data to update the server
       axios
-      .post("http://localhost:3001/persons", newContact)
+      .post(baseURL + "/api/persons", newContact)
       .then(response => {
         setContacts(contacts.concat(response.data))
         setNewName("")
@@ -171,7 +174,7 @@ const App = () => {
       if(decision) {
         const newContact = {...currContact, number: newNumber}
         axios
-        .put(`http://localhost:3001/persons/${newContact.id}`, newContact)
+        .put(`${baseURL}/api/persons/${newContact.id}`, newContact)
         .then(response => {
           setContacts(contacts.map(contact => contact.id !== newContact.id ? contact : response.data))
           setNewName("")
@@ -180,7 +183,7 @@ const App = () => {
         .catch(error => {
           setFail(true)
           axios
-          .get("http://localhost:3001/persons")
+          .get(baseURL + "/api/persons")
           .then(response => {
             setContacts(response.data)
           })
@@ -197,7 +200,7 @@ const App = () => {
   const handleDeleteClick = (id) => {
     setRecentAdded(newName)
     axios
-    .delete(`http://localhost:3001/persons/${id}`)
+    .delete(`${baseURL}/api/persons/${id}`)
     .then(() => {
       setContacts(contacts.filter(contact => 
         contact.id != id
@@ -209,7 +212,7 @@ const App = () => {
   // Getting the initial data from the server
   useEffect(() => {
     axios
-    .get("http://localhost:3001/persons")
+    .get(baseURL + "/api/persons")
     .then(response => {
       setContacts(response.data)
     })
