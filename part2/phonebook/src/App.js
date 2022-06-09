@@ -122,11 +122,10 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [recentAdded, setRecentAdded] = useState('')
-  const [contacts, setContacts] = useState(
-    [{ name: 'Arto Hellas', number: "040-1234567", id: 1}]
-  )
+  const [contacts, setContacts] = useState([])
   const [success, setSuccess] = useState(false)
   const [fail, setFail] = useState(false)
+  const [error, setError] = useState("")
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -168,6 +167,11 @@ const App = () => {
         setNewNumber("")
         setSuccess(true)
       })
+      .catch(error => {
+        setFail(true)
+        console.log(error)
+        setError(error.response.data.error)
+      })
     }
     else {
       let decision = window.confirm(newName + ' is already added to phonebook, replace the old number with a new one?')
@@ -182,6 +186,7 @@ const App = () => {
         })
         .catch(error => {
           setFail(true)
+          setError(error.response.data.error)
           axios
           .get(baseURL + "/api/persons")
           .then(response => {
@@ -206,6 +211,10 @@ const App = () => {
         contact.id != id
       ))
     })
+    .catch(error => {
+      setFail(true)
+      setError(error.response.data.error)
+    })
   }
 
 
@@ -216,6 +225,10 @@ const App = () => {
     .then(response => {
       setContacts(response.data)
     })
+    .catch(error => {
+      setError(error.response.data.error)
+      setFail(true)
+    })
   }, [])
   
 
@@ -223,7 +236,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <AlertSuccess success={success} setSuccess={setSuccess} contact={recentAdded} />
-      <AlertFail fail={fail} setFail={setFail} contact={recentAdded} message=" has been removed from server. Operation failed." />
+      <AlertFail fail={fail} setFail={setFail} contact={recentAdded} message={error} />
       <Filter filter={filter} onChange={handleFilterChange} /> 
       <h2>add a new</h2>
       <PersonForm addNewContact={addNewContact} newName={newName} newNumber={newNumber}
